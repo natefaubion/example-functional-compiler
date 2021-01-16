@@ -1,0 +1,29 @@
+let apply[A, B] (f : A -> B) (a : A) : B = f a;
+let const[A, B] (a : A) (b : B) : A = a;
+let id[A] (a : A) : A = a;
+let compose[A, B, C] (f : B -> C) (g : A -> B) : A -> C = \a -> f (g a);
+let flip[A, B, C] (f : A -> B -> C) : B -> A -> C = \b a -> f a b;
+
+let and[A] (l : A -> A -> A) (r : A -> A -> A) (t : A) (f : A) : A = l (r t f) f;
+let or[A] (l : A -> A -> A) (r : A -> A -> A) (t : A) (f : A) : A = l t (r t f);
+
+let true[A] (t : A) (f : A): A = t;
+let false[A] (t : A) (f : A): A = f;
+
+let pair[Fst, Snd, Res] (a : Fst) (b : Snd) : (Fst -> Snd -> Res) -> Res = \k -> k a b;
+let fst[Fst, Snd] (p : (Fst -> Snd -> Fst) -> Fst) : Fst = p const;
+let snd[Fst, Snd] (p : (Fst -> Snd -> Snd) -> Snd) : Snd = p \a b -> b;
+
+let isNil[Elem, List, Bool] (list : (Elem -> List -> Bool) -> Bool -> Bool) (true : Bool) (false : Bool) : Bool =
+  list (\_ _ -> false) true;
+
+let headOrElse[Elem, List] (else : Elem) (list : (Elem -> List -> Elem) -> Elem -> Elem) : Elem =
+  list const else;
+
+let myList[List, A] (cons : (A -> A -> A) -> List -> List) (nil : List) : List =
+  cons false (cons false (cons false nil));
+
+let test = myList or false "ok" "not-ok";
+
+-- let rec goa (a : Int) : Int = gob a
+--     rec gob (b : Int) : Int = goa b;
